@@ -25,3 +25,4 @@ export default function ImageGallery({ searchRequest, imgPastToModal }){
 // webformatURL - ссылка на маленькое изображение для списка карточек
 // largeImageURL
 ///////////
+

@@ -4,10 +4,11 @@ const URL = 'https://pixabay.com/api/';
 const KEY = '22443315-0655a572bf532c2d4a9d9c050';
 
 async function fetchPixData({ searchRequest = '', page = 1 }) {
-  // console.log({ searchRequest, page });
+  // console.log('inApi', { searchRequest, page });
   const response = await axios.get(
     `${URL}?q=${searchRequest}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`,
   );
+  // console.log('inApi', response.data.hits);
   return response.data.hits;
 }
 
