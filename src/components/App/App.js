@@ -39,47 +39,30 @@ function App() {
 
   //look for the ansver from API if 0 - then 'ничего не нашли' кнопка ЛОАД-МОРЕ НЕ рендерить. Если пустая строка, то Рандомн картинки
 
-  const fetchPixData = () => {
-    // console.log('fetchPixDataL searchRequest', searchRequest);
-    const options = { searchRequest, page };
-    setIsLoaded(true);
-
-    pixApi
-      .fetchPixData(options)
-      .then(pix => {
-        setPixData([...pixData, ...pix]);
-        setPage(page + 1);
-        pix.length < 1 ? setIsTherePix(true) : setIsTherePix(false);
-      })
-      .catch(error => setError(error.message))
-      .finally(() => setIsLoaded(false));
-  };
-
   useEffect(() => {
+    //закоментировал, чтобы при первом старте на странице были рамдомные картинки
+    // if (!searchRequest) {
+    //   return;
+    // }
+
+    const fetchPixData = () => {
+      // console.log('fetchPixDataL searchRequest', searchRequest);
+      // const options = { searchRequest, page };
+      setIsLoaded(true);
+
+      pixApi
+        .fetchPixData({ search: searchRequest, page })
+        .then(pix => {
+          setPixData([...pixData, ...pix]);
+          // setPage(page + 1);
+          pix.length < 1 ? setIsTherePix(true) : setIsTherePix(false);
+        })
+        .catch(error => setError(error.message))
+        .finally(() => setIsLoaded(false));
+    };
     fetchPixData();
-  }, [searchRequest]);
-  //Работает, но "говорит", что надо переделать? на строке 63-81  я закоментировал код с использованием useCallback не помогло - идет постоянный запрос
-
-  // const fetchPixData = useCallback(() => {
-  //     // console.log('fetchPixDataL searchRequest', searchRequest);
-  //     const options = { searchRequest, page };
-  //     setIsLoaded(true);
-
-  //     pixApi
-  //       .fetchPixData(options)
-  //       .then(pix => {
-  //         setPixData([...pixData, ...pix]);
-  //         setPage(page + 1);
-  //         pix.length < 1 ? setIsTherePix(true) : setIsTherePix(false);
-  //       })
-  //       .catch(error => setError(error.message))
-  //       .finally(() => setIsLoaded(false));
-  //   }, [searchRequest, page, pixData]);
-
-  //   useEffect(() => {
-  //     fetchPixData();
-  //   }, [fetchPixData]);
-
+  }, [page, searchRequest]);
+  // Линтер просит так - [page, pixData, searchRequest], НО тогда бесконечные запросы!!!
   const onSubmit = searchRequest => {
     setSearchRequest(searchRequest);
     setPage(1);
@@ -89,6 +72,10 @@ function App() {
 
   const togleModal = () => {
     setShowModal(!showModal);
+  };
+
+  const updatePage = () => {
+    setPage(page + 1);
   };
 
   const imgPastToModal = img => {
@@ -132,7 +119,7 @@ function App() {
           />
         </div>
       )}
-      {shouldRenderLoadMoreButton && <Button LoadMore={fetchPixData} scroll={scroll} />}
+      {shouldRenderLoadMoreButton && <Button LoadMore={updatePage} scroll={scroll} />}
       <ToastContainer autoClose={3000} />
     </div>
   );
